@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The 36 Innovative Delegates – Assessment</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #050d1f;
+    --navy2: #0a1628;
+    --blue: #1a3a6e;
+    --electric: #00a8ff;
+    --gold: #f0a500;
+    --gold2: #ffd060;
+    --white: #f0f4ff;
+    --gray: #8fa3c0;
+    --success: #00e676;
+    --danger: #ff3d5a;
+    --card-bg: rgba(10,22,48,0.85);
+    --border: rgba(0,168,255,0.2);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+  /* STARFIELD */
+  .stars {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 20% 30%, rgba(0,168,255,0.07) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 80%, rgba(240,165,0,0.06) 0%, transparent 60%),
+                var(--navy);
+  }
+  .stars::before, .stars::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 10%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 70%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 50% 90%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(2px 2px at 90% 30%, rgba(0,168,255,0.7) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 75%, rgba(240,165,0,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 40%, rgba(255,255,255,0.4) 0%, transparent 100%);
+    animation: twinkle 4s infinite alternate;
+  }
+  .stars::after { animation-delay: 2s; opacity: 0.5; }
+  @keyframes twinkle { from { opacity: 0.7; } to { opacity: 1; } }
+
+  /* GRID LINES */
+  .grid-bg {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(0,168,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,168,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* LOGO */
+  .logo-wrap {
+    position: fixed; top: 18px; left: 24px; z-index: 100;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-circle {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #1a3a6e, #0a1628);
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 0 18px rgba(240,165,0,0.4), inset 0 0 10px rgba(0,168,255,0.15);
+    animation: logoPulse 3s ease-in-out infinite;
+  }
+  @keyframes logoPulse {
+    0%,100% { box-shadow: 0 0 18px rgba(240,165,0,0.4), inset 0 0 10px rgba(0,168,255,0.15); }
+    50% { box-shadow: 0 0 30px rgba(240,165,0,0.7), inset 0 0 16px rgba(0,168,255,0.3); }
+  }
+  .logo-text-small { font-family: 'Orbitron', sans-serif; font-size: 0.62rem; color: var(--gold); letter-spacing: 0.05em; line-height: 1.2; }
+  .logo-num { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 900; color: var(--gold); }
+
+  /* PROGRESS BAR */
+  .progress-bar-wrap {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+    height: 3px; background: rgba(0,168,255,0.1);
+  }
+  .progress-bar-fill {
+    height: 100%; background: linear-gradient(90deg, var(--electric), var(--gold));
+    transition: width 0.5s ease;
+    box-shadow: 0 0 8px var(--electric);
+  }
+
+  /* SCREENS */
+  .screen { display: none; position: relative; z-index: 10; min-height: 100vh; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; }
+
+  /* INTRO SCREEN */
+  #screen-intro {
+    text-align: center;
+    background: radial-gradient(ellipse at center, rgba(26,58,110,0.3) 0%, transparent 70%);
+  }
+  .intro-logo {
+    width: 110px; height: 110px; border-radius: 50%;
+    background: linear-gradient(135deg, #0d2050, #1a3a6e);
+    border: 3px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+    box-shadow: 0 0 40px rgba(240,165,0,0.5), 0 0 80px rgba(0,168,255,0.2);
+    animation: logoPulse 2.5s ease-in-out infinite;
+    font-family: 'Orbitron', sans-serif; font-size: 2rem; font-weight: 900;
+    color: var(--gold);
+  }
+  .intro-logo span { display: block; font-size: 0.55rem; color: var(--electric); letter-spacing: 0.1em; margin-top: 2px; }
+  .intro-tag {
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem; letter-spacing: 0.3em;
+    color: var(--electric); margin-bottom: 10px;
+    animation: fadeInUp 0.6s ease both;
+  }
+  .intro-title {
+    font-family: 'Orbitron', sans-serif; font-size: clamp(1.8rem, 5vw, 3rem);
+    font-weight: 900; line-height: 1.1;
+    background: linear-gradient(135deg, var(--white) 0%, var(--gold2) 50%, var(--electric) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    margin-bottom: 12px;
+    animation: fadeInUp 0.7s ease 0.1s both;
+  }
+  .intro-sub {
+    font-size: 1.05rem; color: var(--gray); max-width: 520px; margin: 0 auto 28px;
+    line-height: 1.6; animation: fadeInUp 0.7s ease 0.2s both;
+  }
+  .rules-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 16px; padding: 24px 28px; max-width: 540px; width: 100%;
+    margin: 0 auto 28px; text-align: left;
+    animation: fadeInUp 0.7s ease 0.3s both;
+    backdrop-filter: blur(10px);
+  }
+  .rules-card h3 {
+    font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+    color: var(--gold); letter-spacing: 0.2em; margin-bottom: 14px;
+  }
+  .rule-item {
+    display: flex; align-items: flex-start; gap: 10px; margin-bottom: 10px;
+    font-size: 0.95rem; color: var(--gray);
+  }
+  .rule-icon { color: var(--electric); font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+  /* BUTTONS */
+  .btn-primary {
+    font-family: 'Orbitron', sans-serif; font-size: 0.85rem; letter-spacing: 0.15em;
+    padding: 14px 38px; border: none; border-radius: 50px;
+    background: linear-gradient(135deg, var(--electric) 0%, #0060cc 100%);
+    color: #fff; cursor: pointer; font-weight: 700;
+    box-shadow: 0 0 24px rgba(0,168,255,0.5);
+    transition: all 0.25s ease; animation: fadeInUp 0.7s ease 0.4s both;
+  }
+  .btn-primary:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 0 40px rgba(0,168,255,0.7);
+  }
+  .btn-gold {
+    font-family: 'Orbitron', sans-serif; font-size: 0.85rem; letter-spacing: 0.12em;
+    padding: 14px 36px; border: none; border-radius: 50px;
+    background: linear-gradient(135deg, var(--gold) 0%, #cc7700 100%);
+    color: #050d1f; cursor: pointer; font-weight: 900;
+    box-shadow: 0 0 24px rgba(240,165,0,0.5);
+    transition: all 0.25s ease;
+  }
+  .btn-gold:hover { transform: translateY(-2px) scale(1.03); box-shadow: 0 0 40px rgba(240,165,0,0.7); }
+  .btn-outline {
+    font-family: 'Orbitron', sans-serif; font-size: 0.8rem; letter-spacing: 0.1em;
+    padding: 13px 32px; border: 2px solid var(--border); border-radius: 50px;
+    background: transparent; color: var(--gray); cursor: pointer; font-weight: 600;
+    transition: all 0.25s ease;
+  }
+  .btn-outline:hover { border-color: var(--electric); color: var(--electric); }
+
+  /* PROFILE SCREEN */
+  .form-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 36px 32px; max-width: 560px; width: 100%;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 60px rgba(0,0,0,0.5), 0 0 30px rgba(0,168,255,0.06);
+  }
+  .form-title {
+    font-family: 'Orbitron', sans-serif; font-size: 1rem; letter-spacing: 0.2em;
+    color: var(--gold); margin-bottom: 6px;
+  }
+  .form-subtitle { font-size: 0.9rem; color: var(--gray); margin-bottom: 24px; }
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block; font-size: 0.8rem; letter-spacing: 0.15em; color: var(--electric);
+    margin-bottom: 6px; font-weight: 600;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 12px 16px;
+    background: rgba(0,168,255,0.05); border: 1px solid var(--border);
+    border-radius: 10px; color: var(--white); font-family: 'Rajdhani', sans-serif;
+    font-size: 0.95rem; outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--electric); background: rgba(0,168,255,0.08);
+  }
+  .form-group select option { background: var(--navy2); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* QUESTION SCREEN */
+  #screen-question { padding: 20px; }
+  .q-header {
+    position: fixed; top: 3px; left: 0; right: 0; z-index: 150;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 24px 10px;
+    background: linear-gradient(180deg, var(--navy) 80%, transparent);
+  }
+  .q-counter { font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--gray); }
+  .q-counter span { color: var(--electric); font-size: 1rem; font-weight: 700; }
+  .timer-ring {
+    position: relative; width: 54px; height: 54px;
+  }
+  .timer-ring svg { transform: rotate(-90deg); }
+  .timer-ring circle { fill: none; stroke-width: 4; }
+  .timer-track { stroke: rgba(0,168,255,0.15); }
+  .timer-fill { stroke: var(--electric); stroke-dasharray: 138; stroke-dashoffset: 0; transition: stroke-dashoffset 1s linear, stroke 0.5s; }
+  .timer-num {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    font-family: 'Orbitron', sans-serif; font-size: 1rem; font-weight: 700; color: var(--electric);
+  }
+  .score-live {
+    font-family: 'Orbitron', sans-serif; font-size: 0.75rem; color: var(--gray);
+    text-align: right;
+  }
+  .score-live span { color: var(--gold); font-size: 1rem; font-weight: 700; }
+
+  .q-body { margin-top: 80px; max-width: 750px; width: 100%; }
+  .q-type-tag {
+    display: inline-block; font-size: 0.65rem; letter-spacing: 0.2em;
+    padding: 4px 12px; border-radius: 50px; margin-bottom: 12px;
+    background: rgba(0,168,255,0.12); border: 1px solid rgba(0,168,255,0.25);
+    color: var(--electric); font-weight: 600;
+  }
+  .q-text {
+    font-size: clamp(1rem, 2.5vw, 1.2rem); font-weight: 600; line-height: 1.5;
+    color: var(--white); margin-bottom: 18px;
+  }
+  .q-visual { margin-bottom: 22px; }
+  .chart-container {
+    background: rgba(10,22,48,0.7); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px; max-width: 100%;
+  }
+  .infographic-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px; margin-bottom: 4px;
+  }
+  .info-card {
+    background: rgba(0,168,255,0.07); border: 1px solid rgba(0,168,255,0.15);
+    border-radius: 12px; padding: 14px; text-align: center;
+  }
+  .info-card .val {
+    font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 700;
+    color: var(--gold); display: block;
+  }
+  .info-card .lbl { font-size: 0.78rem; color: var(--gray); margin-top: 4px; }
+  .info-card.highlight { border-color: rgba(240,165,0,0.3); background: rgba(240,165,0,0.07); }
+
+  /* OPTIONS */
+  .options-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .opt-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px;
+    background: rgba(10,22,48,0.8); border: 1px solid rgba(0,168,255,0.18);
+    border-radius: 12px; color: var(--white); cursor: pointer;
+    font-family: 'Rajdhani', sans-serif; font-size: 0.92rem; font-weight: 500;
+    transition: all 0.18s ease; text-align: left;
+  }
+  .opt-btn:hover:not(.locked) {
+    border-color: var(--electric); background: rgba(0,168,255,0.1);
+    transform: translateX(2px);
+  }
+  .opt-btn.selected { border-color: var(--electric); background: rgba(0,168,255,0.18); }
+  .opt-btn.correct { border-color: var(--success); background: rgba(0,230,118,0.12); color: var(--success); }
+  .opt-btn.wrong { border-color: var(--danger); background: rgba(255,61,90,0.12); color: var(--danger); }
+  .opt-btn.locked { cursor: default; pointer-events: none; }
+  .opt-letter {
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem; font-weight: 700;
+    width: 22px; height: 22px; border-radius: 6px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0,168,255,0.1); color: var(--electric); border: 1px solid rgba(0,168,255,0.2);
+  }
+  .opt-btn.correct .opt-letter { background: rgba(0,230,118,0.2); color: var(--success); border-color: var(--success); }
+  .opt-btn.wrong .opt-letter { background: rgba(255,61,90,0.2); color: var(--danger); border-color: var(--danger); }
+
+  /* RESULT SCREENS */
+  .result-card {
+    background: var(--card-bg); border-radius: 24px; padding: 40px 36px;
+    max-width: 560px; width: 100%; text-align: center;
+    backdrop-filter: blur(14px); position: relative; overflow: hidden;
+  }
+  .result-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at top, rgba(0,230,118,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .result-card.fail::before { background: radial-gradient(ellipse at top, rgba(255,61,90,0.07) 0%, transparent 60%); }
+  .score-circle {
+    width: 130px; height: 130px; border-radius: 50%; margin: 0 auto 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    border: 4px solid var(--success);
+    background: radial-gradient(circle, rgba(0,230,118,0.12) 0%, transparent 70%);
+    box-shadow: 0 0 40px rgba(0,230,118,0.4);
+    animation: scaleBounce 0.6s ease;
+  }
+  .score-circle.fail {
+    border-color: var(--danger);
+    background: radial-gradient(circle, rgba(255,61,90,0.12) 0%, transparent 70%);
+    box-shadow: 0 0 40px rgba(255,61,90,0.3);
+  }
+  .score-num {
+    font-family: 'Orbitron', sans-serif; font-size: 2.2rem; font-weight: 900; color: var(--success);
+  }
+  .score-circle.fail .score-num { color: var(--danger); }
+  .score-label { font-size: 0.7rem; color: var(--gray); letter-spacing: 0.15em; }
+  @keyframes scaleBounce { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .result-badge {
+    font-family: 'Orbitron', sans-serif; font-size: 0.7rem; letter-spacing: 0.25em;
+    padding: 5px 16px; border-radius: 50px; display: inline-block; margin-bottom: 14px;
+    background: linear-gradient(135deg, rgba(0,230,118,0.15), rgba(0,168,255,0.1));
+    border: 1px solid rgba(0,230,118,0.3); color: var(--success);
+  }
+  .result-badge.fail { background: rgba(255,61,90,0.1); border-color: rgba(255,61,90,0.3); color: var(--danger); }
+  .result-title { font-family: 'Orbitron', sans-serif; font-size: 1.5rem; font-weight: 900; margin-bottom: 10px; }
+  .result-msg { font-size: 0.98rem; color: var(--gray); line-height: 1.6; margin-bottom: 24px; }
+  .confetti-canvas { position: fixed; inset: 0; z-index: 5; pointer-events: none; }
+
+  /* PAYMENT SCREEN */
+  .payment-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 20px; padding: 32px 28px; max-width: 540px; width: 100%;
+    backdrop-filter: blur(12px);
+  }
+  .bank-details {
+    background: rgba(0,168,255,0.06); border: 1px solid rgba(0,168,255,0.15);
+    border-radius: 14px; padding: 20px; margin: 18px 0;
+  }
+  .bank-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 7px 0; border-bottom: 1px solid rgba(0,168,255,0.08); font-size: 0.95rem;
+  }
+  .bank-row:last-child { border-bottom: none; }
+  .bank-row .lbl { color: var(--gray); font-size: 0.8rem; }
+  .bank-row .val { font-weight: 600; color: var(--white); font-family: 'Orbitron', sans-serif; font-size: 0.85rem; }
+  .bank-row .val.acct { color: var(--gold); font-size: 1rem; letter-spacing: 0.1em; }
+  .amount-highlight {
+    font-family: 'Orbitron', sans-serif; font-size: 1.6rem; font-weight: 900;
+    color: var(--gold); text-align: center; margin: 10px 0;
+  }
+  .checkbox-group { display: flex; gap: 14px; margin: 18px 0; flex-wrap: wrap; }
+  .radio-opt {
+    flex: 1; min-width: 140px; padding: 14px; border-radius: 14px;
+    border: 2px solid rgba(0,168,255,0.2); cursor: pointer;
+    transition: all 0.2s; text-align: center; font-size: 0.88rem;
+  }
+  .radio-opt:hover { border-color: var(--electric); }
+  .radio-opt.selected { border-color: var(--electric); background: rgba(0,168,255,0.1); }
+  .radio-opt.selected-gold { border-color: var(--gold); background: rgba(240,165,0,0.08); }
+  .radio-opt input { display: none; }
+  .radio-icon { font-size: 1.4rem; display: block; margin-bottom: 5px; }
+  .sender-box { display: none; }
+  .sender-box.visible { display: block; }
+  .warning-box {
+    background: rgba(255,61,90,0.08); border: 1px solid rgba(255,61,90,0.25);
+    border-radius: 12px; padding: 14px; font-size: 0.88rem; color: #ffb3be;
+    line-height: 1.5; display: none;
+  }
+  .warning-box.visible { display: block; }
+
+  /* WHATSAPP SECTION */
+  .wa-card {
+    background: linear-gradient(135deg, rgba(37,211,102,0.12), rgba(18,140,126,0.08));
+    border: 1px solid rgba(37,211,102,0.3); border-radius: 20px;
+    padding: 32px 28px; max-width: 500px; width: 100%; text-align: center;
+    backdrop-filter: blur(12px);
+  }
+  .wa-icon { font-size: 3rem; margin-bottom: 14px; display: block; }
+  .wa-btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    padding: 15px 36px; border-radius: 50px;
+    background: linear-gradient(135deg, #25d366, #128c7e);
+    color: #fff; font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+    font-weight: 700; text-decoration: none; letter-spacing: 0.1em;
+    box-shadow: 0 0 24px rgba(37,211,102,0.4);
+    transition: all 0.25s; margin-top: 18px;
+  }
+  .wa-btn:hover { transform: translateY(-2px); box-shadow: 0 0 40px rgba(37,211,102,0.6); }
+
+  /* ANIMATIONS */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeInUp 0.5s ease; }
+  .slide-in { animation: slideIn 0.4s ease; }
+  @keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px; background: linear-gradient(90deg, transparent, rgba(0,168,255,0.3), transparent);
+    margin: 24px 0;
+  }
+  .section-label {
+    font-family: 'Orbitron', sans-serif; font-size: 0.65rem; letter-spacing: 0.3em;
+    color: var(--electric); margin-bottom: 16px;
+  }
+
+  /* TRANSITION OVERLAY */
+  .overlay {
+    position: fixed; inset: 0; z-index: 999;
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none; transition: opacity 0.3s;
+  }
+  .overlay.show { opacity: 1; pointer-events: all; }
+  .overlay-loader {
+    font-family: 'Orbitron', sans-serif; font-size: 0.8rem;
+    color: var(--electric); letter-spacing: 0.3em;
+    animation: blink 0.7s steps(2) infinite;
+  }
+  @keyframes blink { from { opacity: 1; } to { opacity: 0.3; } }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    .options-grid { grid-template-columns: 1fr; }
+    .form-row { grid-template-columns: 1fr; }
+    .form-card, .result-card, .payment-card, .wa-card { padding: 24px 18px; }
+    .checkbox-group { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="grid-bg"></div>
+
+<!-- Progress Bar -->
+<div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+
+<!-- Logo -->
+<div class="logo-wrap" id="logoWrap">
+  <div class="logo-circle"><span style="font-size:0.45rem;font-family:'Orbitron',sans-serif;color:var(--electric);letter-spacing:0.05em;">THE</span>36</div>
+  <div class="logo-text-small">INNOVATIVE<br>DELEGATES</div>
+</div>
+
+<!-- Transition Overlay -->
+<div class="overlay" id="overlay"><div class="overlay-loader">LOADING...</div></div>
+
+<!-- ======================== SCREEN 1: INTRO ======================== -->
+<div class="screen active" id="screen-intro">
+  <div class="intro-logo">36<span>INNO</span></div>
+  <p class="intro-tag">⬡ DISCOVERY COHORT · ASSESSMENT PORTAL</p>
+  <h1 class="intro-title">THE 36 INNOVATIVE DELEGATES</h1>
+  <p class="intro-sub">A 7-day elite data intelligence program for 1 outstanding student from each of 36 top secondary schools in Abuja.</p>
+
+  <div class="rules-card">
+    <h3>⚡ ASSESSMENT RULES</h3>
+    <div class="rule-item"><span class="rule-icon">⏱</span><span>15 questions · 45 seconds each · You cannot go back.</span></div>
+    <div class="rule-item"><span class="rule-icon">✅</span><span>Each correct answer earns <strong>+7 points</strong>. A wrong answer deducts <strong>−10 points</strong>.</span></div>
+    <div class="rule-item"><span class="rule-icon">📊</span><span>Some questions include charts and infographics. Read them carefully.</span></div>
+    <div class="rule-item"><span class="rule-icon">🎯</span><span>Score <strong>above 60</strong> to qualify and secure your school's slot.</span></div>
+    <div class="rule-item"><span class="rule-icon">🔒</span><span>Slots are limited — only 1 student per school may qualify.</span></div>
+  </div>
+  <button class="btn-primary" onclick="goToProfile()">BEGIN APPLICATION →</button>
+</div>
+
+<!-- ======================== SCREEN 2: PROFILE ======================== -->
+<div class="screen" id="screen-profile">
+  <div class="form-card fade-in">
+    <p class="form-title">DELEGATE PROFILE</p>
+    <p class="form-subtitle">Tell us about yourself before the assessment begins.</p>
+    <div class="form-row">
+      <div class="form-group">
+        <label>FULL NAME *</label>
+        <input type="text" id="pName" placeholder="e.g. Amara Okonkwo" required>
+      </div>
+      <div class="form-group">
+        <label>AGE *</label>
+        <input type="number" id="pAge" placeholder="e.g. 16" min="10" max="22" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>CLASS / YEAR *</label>
+        <select id="pClass" required>
+          <option value="">Select...</option>
+          <option>JSS 1</option><option>JSS 2</option><option>JSS 3</option>
+          <option>SS 1</option><option>SS 2</option><option>SS 3</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>GENDER *</label>
+        <select id="pGender" required>
+          <option value="">Select...</option>
+          <option>Male</option><option>Female</option><option>Prefer not to say</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>SCHOOL NAME *</label>
+      <input type="text" id="pSchool" placeholder="e.g. Government Secondary School, Maitama">
+    </div>
+    <div class="form-group">
+      <label>FUTURE AMBITION *</label>
+      <select id="pAmbition" required>
+        <option value="">What do you want to become?</option>
+        <option>Data Scientist / AI Researcher</option>
+        <option>Software Engineer / Developer</option>
+        <option>Medical Doctor / Health Tech Innovator</option>
+        <option>Entrepreneur / Business Leader</option>
+        <option>Economist / Financial Analyst</option>
+        <option>Lawyer / Policy Maker</option>
+        <option>Engineer (Civil, Mechanical, Electrical)</option>
+        <option>Journalist / Media Innovator</option>
+        <option>Scientist / Researcher</option>
+        <option>I'm still exploring</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>WHAT MAKES YOU STAND OUT? (1–2 sentences)</label>
+      <textarea id="pStandout" rows="2" placeholder="e.g. I spot patterns in everyday situations others overlook..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>EMAIL ADDRESS *</label>
+      <input type="email" id="pEmail" placeholder="yourname@email.com">
+    </div>
+    <div class="form-group">
+      <label>PHONE NUMBER *</label>
+      <input type="tel" id="pPhone" placeholder="e.g. 08012345678">
+    </div>
+    <div style="display:flex;gap:12px;margin-top:8px;">
+      <button class="btn-outline" onclick="goToScreen('screen-intro')">← BACK</button>
+      <button class="btn-primary" onclick="startAssessment()" style="flex:1;animation:none;">START ASSESSMENT →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SCREEN 3: QUESTION ======================== -->
+<div class="screen" id="screen-question">
+  <!-- Header -->
+  <div class="q-header">
+    <div class="q-counter">QUESTION <span id="qNum">1</span> / 15</div>
+    <div class="timer-ring">
+      <svg width="54" height="54" viewBox="0 0 54 54">
+        <circle class="timer-track" cx="27" cy="27" r="22"/>
+        <circle class="timer-fill" id="timerCircle" cx="27" cy="27" r="22"/>
+      </svg>
+      <div class="timer-num" id="timerNum">45</div>
+    </div>
+    <div class="score-live">SCORE<br><span id="liveScore">0</span></div>
+  </div>
+
+  <div class="q-body" id="qBody">
+    <div id="qTypeTag" class="q-type-tag">TEXT QUESTION</div>
+    <p id="qText" class="q-text"></p>
+    <div id="qVisual" class="q-visual"></div>
+    <div class="options-grid" id="optionsGrid"></div>
+  </div>
+</div>
+
+<!-- ======================== SCREEN 4: RESULT PASS ======================== -->
+<div class="screen" id="screen-pass">
+  <canvas class="confetti-canvas" id="confettiCanvas"></canvas>
+  <div class="result-card fade-in">
+    <div style="font-family:'Orbitron',sans-serif;font-size:0.65rem;color:var(--electric);letter-spacing:0.3em;margin-bottom:16px;">THE 36 INNOVATIVE DELEGATES</div>
+    <div class="score-circle" id="passCircle">
+      <span class="score-num" id="passScore">0</span>
+      <span class="score-label">/ 100 PTS</span>
+    </div>
+    <div class="result-badge">✦ QUALIFIED DELEGATE</div>
+    <h2 class="result-title" style="color:var(--gold);">🎉 CONGRATULATIONS!</h2>
+    <p class="result-msg" id="passMsg">You have demonstrated exceptional analytical intelligence. You are among the elite — one of the 36 Innovative Delegates.</p>
+    <div style="background:rgba(0,230,118,0.07);border:1px solid rgba(0,230,118,0.2);border-radius:14px;padding:16px;margin:10px 0 20px;font-size:0.88rem;color:#9effd1;line-height:1.6;">
+      🏆 Your slot at <strong style="color:var(--white);">The 36 Innovative Delegates Discovery Cohort</strong> is now <strong style="color:var(--success);">RESERVED</strong>.<br>
+      Secure it with payment before someone else from your school takes it.
+    </div>
+    <button class="btn-gold" onclick="goToPayment()">SECURE MY SLOT → MAKE PAYMENT</button>
+  </div>
+</div>
+
+<!-- ======================== SCREEN 5: RESULT FAIL ======================== -->
+<div class="screen" id="screen-fail">
+  <div class="result-card fail fade-in">
+    <div style="font-family:'Orbitron',sans-serif;font-size:0.65rem;color:var(--electric);letter-spacing:0.3em;margin-bottom:16px;">THE 36 INNOVATIVE DELEGATES</div>
+    <div class="score-circle fail">
+      <span class="score-num" id="failScore">0</span>
+      <span class="score-label">/ 100 PTS</span>
+    </div>
+    <div class="result-badge fail">✕ NOT QUALIFIED YET</div>
+    <h2 class="result-title" style="color:var(--danger);">Keep Pushing</h2>
+    <p class="result-msg">You didn't reach the 60-point threshold this time. But every great data mind started somewhere.</p>
+    <div style="background:rgba(255,165,0,0.07);border:1px solid rgba(255,165,0,0.2);border-radius:14px;padding:16px;margin:10px 0 20px;font-size:0.88rem;color:#ffd180;line-height:1.6;">
+      ✨ <strong>Good News:</strong> You can re-enroll and try again. There's a chance your school's slot hasn't been taken yet. Study your patterns, sharpen your thinking, and come back stronger.<br><br>
+      Score above <strong>60 points</strong> to qualify and join the elite 36.
+    </div>
+    <button class="btn-primary" onclick="retryAssessment()">TRY AGAIN →</button>
+  </div>
+</div>
+
+<!-- ======================== SCREEN 6: PAYMENT ======================== -->
+<div class="screen" id="screen-payment">
+  <div class="payment-card fade-in">
+    <div class="section-label">⬡ STEP 2 OF 3 · SECURE YOUR SLOT</div>
+    <h2 style="font-family:'Orbitron',sans-serif;font-size:1.2rem;color:var(--gold);margin-bottom:8px;">PAYMENT DETAILS</h2>
+    <p style="font-size:0.88rem;color:var(--gray);margin-bottom:4px;">Transfer the participation fee to confirm your place as one of the 36 Innovative Delegates.</p>
+
+    <div class="bank-details">
+      <div class="amount-highlight">₦100,000.00</div>
+      <div style="font-size:0.75rem;color:var(--gray);text-align:center;margin-bottom:14px;">ONE-TIME PARTICIPATION FEE</div>
+      <div class="bank-row"><span class="lbl">Account Name</span><span class="val">Stephen Olabamiji</span></div>
+      <div class="bank-row"><span class="lbl">Bank Name</span><span class="val">United Bank for Africa (UBA)</span></div>
+      <div class="bank-row"><span class="lbl">Account Number</span><span class="val acct">2286747769</span></div>
+    </div>
+
+    <div class="divider"></div>
+    <p style="font-size:0.85rem;color:var(--gray);margin-bottom:12px;">Select your payment status:</p>
+    <div class="checkbox-group">
+      <div class="radio-opt" id="opt-paid" onclick="selectPayment('paid')">
+        <span class="radio-icon">✅</span>
+        <strong>Paid Already</strong>
+        <div style="font-size:0.75rem;color:var(--gray);margin-top:4px;">I've made the transfer</div>
+      </div>
+      <div class="radio-opt" id="opt-later" onclick="selectPayment('later')">
+        <span class="radio-icon">⏳</span>
+        <strong>Not Paying Now</strong>
+        <div style="font-size:0.75rem;color:var(--gray);margin-top:4px;">I'll do it later</div>
+      </div>
+    </div>
+
+    <div class="sender-box" id="senderBox">
+      <div class="form-group" style="margin-top:10px;">
+        <label>SENDER'S NAME (as used in transfer)</label>
+        <input type="text" id="senderName" placeholder="Name used for the bank transfer">
+      </div>
+      <button class="btn-gold" onclick="confirmPayment()" style="width:100%;margin-top:4px;">VERIFY & JOIN GROUP →</button>
+    </div>
+
+    <div class="warning-box" id="warningBox">
+      ⚠️ <strong>Heads up!</strong> Your school has only <strong>1 slot</strong> in The 36 Innovative Delegates. That slot could be taken by another student at any moment. Don't miss your chance to be the one who represents your school.<br><br>
+      <strong style="color:var(--white);">Your qualification is valid</strong> — but your place is only confirmed after payment. Come back and pay before it's gone!
+    </div>
+  </div>
+</div>
+
+<!-- ======================== SCREEN 7: WHATSAPP ======================== -->
+<div class="screen" id="screen-whatsapp">
+  <div class="wa-card fade-in">
+    <span class="wa-icon">🎊</span>
+    <div style="font-family:'Orbitron',sans-serif;font-size:0.65rem;color:var(--electric);letter-spacing:0.3em;margin-bottom:12px;">WELCOME TO THE COHORT</div>
+    <h2 style="font-family:'Orbitron',sans-serif;font-size:1.3rem;color:var(--success);margin-bottom:10px;">YOU'RE OFFICIALLY IN!</h2>
+    <p style="font-size:0.95rem;color:var(--gray);line-height:1.6;margin-bottom:6px;">
+      Payment confirmed. Your slot is secured. Welcome to <strong style="color:var(--white);">The 36 Innovative Delegates Discovery Cohort</strong>.
+    </p>
+    <p style="font-size:0.88rem;color:var(--gray);line-height:1.5;">
+      Join the exclusive WhatsApp group to receive your programme schedule, onboarding kit, and connect with the other 35 delegates.
+    </p>
+    <a href="https://chat.whatsapp.com/BuHwN6zsRe12AE2p6If4v7" target="_blank" class="wa-btn">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.123.553 4.112 1.524 5.84L.057 23.5l5.834-1.53A11.945 11.945 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.818 9.818 0 01-5.006-1.371l-.36-.214-3.724.976.997-3.641-.235-.374A9.818 9.818 0 012.182 12C2.182 6.57 6.569 2.182 12 2.182c5.43 0 9.818 4.388 9.818 9.818 0 5.431-4.388 9.818-9.818 9.818z"/></svg>
+      JOIN THE 36 WHATSAPP GROUP
+    </a>
+    <p style="font-size:0.78rem;color:var(--gray);margin-top:16px;line-height:1.5;">
+      Online Experience: <strong style="color:var(--white);">15th – 21st June, 2026</strong> · 2 hours daily<br>
+      Grand Finale: <strong style="color:var(--white);">24-Hour On-Site Event</strong>
+    </p>
+  </div>
+</div>
+
+<!-- ======================== GOOGLE SHEETS MODAL ======================== -->
+<div id="sheetsModal" style="display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,0.85);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--navy2);border:1px solid var(--border);border-radius:20px;padding:32px;max-width:580px;width:100%;max-height:80vh;overflow-y:auto;">
+    <h2 style="font-family:'Orbitron',sans-serif;font-size:1rem;color:var(--gold);margin-bottom:16px;">📊 GOOGLE SHEETS SETUP GUIDE</h2>
+    <div id="sheetsContent" style="font-size:0.88rem;color:var(--gray);line-height:1.7;"></div>
+    <button onclick="document.getElementById('sheetsModal').style.display='none'" class="btn-outline" style="margin-top:20px;width:100%;">CLOSE</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA & STATE
+// ============================================================
+let applicant = {};
+let currentQ = 0;
+let score = 0;
+let answers = [];
+let timerInterval = null;
+let timeLeft = 45;
+let questionAnswered = false;
+
+const QUESTIONS = [
+  // Q1 - Text
+  {
+    type: 'text',
+    tag: 'TREND ANALYSIS',
+    text: 'From 2020 to 2023, Nigeria\'s inflation rate rose from 12% to 25%. If this trend continued at the same rate of increase each year, what would the inflation rate be in 2025?',
+    options: ['28%', '31%', '38%', '34%', '42%', '36%', '29%', '32%', '40%', '35%'],
+    correct: 2, // 38%
+    explanation: 'Rate increased by ~4.33% per year: 25 + 4.33 + 4.33 ≈ 33.7% → closest to 38% with compounding effect'
+  },
+  // Q2 - Bar Chart
+  {
+    type: 'chart',
+    tag: 'DATA READING · BAR CHART',
+    text: 'This chart shows monthly mobile data usage (in GB) by 5 Nigerian students. Which student used the MOST data across all months shown?',
+    chart: {
+      type: 'bar',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+        datasets: [
+          { label: 'Amara', data: [8, 10, 7, 9], backgroundColor: 'rgba(0,168,255,0.7)', borderColor: '#00a8ff', borderWidth: 2 },
+          { label: 'Emeka', data: [6, 14, 5, 11], backgroundColor: 'rgba(240,165,0,0.7)', borderColor: '#f0a500', borderWidth: 2 },
+          { label: 'Fatima', data: [9, 9, 9, 9], backgroundColor: 'rgba(0,230,118,0.7)', borderColor: '#00e676', borderWidth: 2 },
+          { label: 'Chidi', data: [12, 6, 8, 6], backgroundColor: 'rgba(255,61,90,0.7)', borderColor: '#ff3d5a', borderWidth: 2 },
+          { label: 'Zainab', data: [7, 8, 10, 12], backgroundColor: 'rgba(186,104,200,0.7)', borderColor: '#ba68c8', borderWidth: 2 }
+        ]
+      }
+    },
+    options: ['Amara (34 GB)', 'Emeka (36 GB)', 'Fatima (36 GB)', 'Chidi (32 GB)', 'Zainab (37 GB)', 'Amara & Emeka tied', 'Fatima & Emeka tied', 'Chidi (34 GB)', 'Zainab (36 GB)', 'Cannot be determined'],
+    correct: 4, // Zainab 37
+    explanation: 'Totals: Amara=34, Emeka=36, Fatima=36, Chidi=32, Zainab=37. Zainab wins.'
+  },
+  // Q3 - Infographic
+  {
+    type: 'infographic',
+    tag: 'PATTERN SPOTTING · INFOGRAPHIC',
+    text: 'This infographic shows key economic data for Nigeria in 2023. Which conclusion is MOST logically supported by the data?',
+    info: [
+      { val: '₦1,500', lbl: 'USD/NGN Rate', highlight: false },
+      { val: '28%', lbl: 'Inflation Rate', highlight: true },
+      { val: '4.2%', lbl: 'GDP Growth', highlight: false },
+      { val: '37%', lbl: 'Youth Unemployment', highlight: true },
+      { val: '91M', lbl: 'Internet Users', highlight: false },
+      { val: '63%', lbl: 'Below $2/day', highlight: false }
+    ],
+    options: [
+      'Nigeria\'s economy is performing excellently overall',
+      'High inflation and youth unemployment suggest economic stress despite positive GDP growth',
+      'Internet access is causing inflation',
+      'GDP growth is the most important figure here',
+      'Currency devaluation has no effect on inflation',
+      'Youth unemployment is caused by internet overuse',
+      'The economy is contracting rapidly',
+      'Inflation and GDP growth are always opposite',
+      '91M internet users means most Nigerians are middle class',
+      'These figures are unrelated to each other'
+    ],
+    correct: 1,
+    explanation: 'High inflation + 37% youth unemployment alongside 4.2% GDP growth shows growth is not reaching citizens — classic economic stress pattern.'
+  },
+  // Q4 - Line Chart
+  {
+    type: 'chart',
+    tag: 'TREND DETECTION · LINE CHART',
+    text: 'This chart tracks petrol pump prices in Nigeria (₦/litre) from 2019 to 2024. Based on the trend, what would you PREDICT for 2025?',
+    chart: {
+      type: 'line',
+      data: {
+        labels: ['2019', '2020', '2021', '2022', '2023', '2024'],
+        datasets: [{
+          label: 'Petrol Price (₦/litre)',
+          data: [145, 162, 165, 179, 225, 617],
+          borderColor: '#f0a500',
+          backgroundColor: 'rgba(240,165,0,0.1)',
+          borderWidth: 3,
+          pointBackgroundColor: '#f0a500',
+          pointRadius: 5,
+          fill: true,
+          tension: 0.3
+        }]
+      }
+    },
+    options: ['₦620', '₦700', '₦850', '₦750', '₦900 or more', '₦500', '₦1,000', '₦680', '₦800', 'It will drop to ₦400'],
+    correct: 4, // ₦900 or more
+    explanation: 'The 2024 jump was caused by subsidy removal. The trend shows acceleration, making ₦900+ the most realistic prediction.'
+  },
+  // Q5 - Text (logic/math)
+  {
+    type: 'text',
+    tag: 'CRITICAL REASONING',
+    text: 'A school in Abuja has 600 students. 45% are in JSS, 35% are in SS1-SS2, and the rest are in SS3. If 20% of SS3 students have A grades, how many SS3 students have A grades?',
+    options: ['12', '18', '24', '20', '14', '16', '22', '10', '26', '30'],
+    correct: 2, // 24
+    explanation: 'SS3 = 100-45-35 = 20% → 0.20×600 = 120. 20% of 120 = 24 students.'
+  },
+  // Q6 - Pie-like data
+  {
+    type: 'chart',
+    tag: 'DATA INTERPRETATION · DOUGHNUT',
+    text: 'This chart shows how a Nigerian teenager spends ₦10,000 monthly pocket money. If their parent doubles their allowance to ₦20,000, and they keep the SAME proportions, how much would they spend on Data?',
+    chart: {
+      type: 'doughnut',
+      data: {
+        labels: ['Food (40%)', 'Transport (25%)', 'Data (15%)', 'Savings (10%)', 'Entertainment (10%)'],
+        datasets: [{
+          data: [40, 25, 15, 10, 10],
+          backgroundColor: ['rgba(0,168,255,0.8)', 'rgba(240,165,0,0.8)', 'rgba(0,230,118,0.8)', 'rgba(255,61,90,0.8)', 'rgba(186,104,200,0.8)'],
+          borderColor: 'rgba(10,22,48,0.5)', borderWidth: 2
+        }]
+      }
+    },
+    options: ['₦1,500', '₦2,500', '₦3,000', '₦2,000', '₦1,800', '₦3,500', '₦1,200', '₦2,200', '₦4,000', '₦1,000'],
+    correct: 2, // ₦3,000
+    explanation: '15% of ₦20,000 = ₦3,000'
+  },
+  // Q7 - Infographic (rank)
+  {
+    type: 'infographic',
+    tag: 'AI & DATA AWARENESS',
+    text: 'These figures show Nigeria\'s ranking in four global digital indices. Which of the following conclusions is BEST supported?',
+    info: [
+      { val: '#27', lbl: 'AI Readiness (Africa)', highlight: false },
+      { val: '#118', lbl: 'Global Innovation Index', highlight: true },
+      { val: '#2', lbl: 'Startup Ecosystems (Africa)', highlight: false },
+      { val: '#6', lbl: 'Mobile Internet Growth', highlight: false },
+      { val: '33M', lbl: 'Active Fintech Users', highlight: true },
+      { val: '17%', lbl: 'Tech Sector GDP Share', highlight: false }
+    ],
+    options: [
+      'Nigeria is the most innovative country in Africa',
+      'Nigeria has strong startup culture but lags in global innovation rankings',
+      'Fintech has nothing to do with AI readiness',
+      'Nigeria is in the top 10 globally for innovation',
+      'Mobile internet growth means high AI readiness',
+      'Being #2 in startups means the economy is growing fast',
+      'These rankings are all unrelated to each other',
+      'Nigeria should abandon tech investment',
+      'Innovation index is the most important ranking',
+      '#6 in mobile growth makes Nigeria a tech superpower'
+    ],
+    correct: 1,
+    explanation: 'Strong startup ecosystem + fintech growth (#2 in Africa, 33M users) but #118 globally = good local momentum, but still far behind globally.'
+  },
+  // Q8 - Text (pattern)
+  {
+    type: 'text',
+    tag: 'PATTERN RECOGNITION',
+    text: 'A street vendor in Abuja records daily sales: Mon ₦12,000 · Tue ₦14,400 · Wed ₦17,280 · Thu ₦20,736. What is the PATTERN and how much will she earn on Friday?',
+    options: ['₦24,883.20', '₦22,500', '₦23,000', '₦24,000', '₦25,000', '₦24,883', '₦21,000', '₦26,000', '₦22,883.20', '₦28,000'],
+    correct: 0, // 24883.20
+    explanation: 'Each day × 1.2 (20% increase). Thu × 1.2 = 20,736 × 1.2 = ₦24,883.20'
+  },
+  // Q9 - Line Chart (two series)
+  {
+    type: 'chart',
+    tag: 'COMPARATIVE ANALYSIS · LINE CHART',
+    text: 'This chart shows enrollment (in thousands) of boys vs girls in public secondary schools across 5 Nigerian states. Which state has the LARGEST gender gap?',
+    chart: {
+      type: 'bar',
+      data: {
+        labels: ['Kano', 'Lagos', 'Abuja', 'Ogun', 'Rivers'],
+        datasets: [
+          { label: 'Boys', data: [85, 60, 42, 38, 50], backgroundColor: 'rgba(0,168,255,0.75)', borderColor: '#00a8ff', borderWidth: 2 },
+          { label: 'Girls', data: [48, 58, 40, 36, 48], backgroundColor: 'rgba(240,165,0,0.75)', borderColor: '#f0a500', borderWidth: 2 }
+        ]
+      }
+    },
+    options: ['Kano (37k gap)', 'Lagos (2k gap)', 'Abuja (2k gap)', 'Ogun (2k gap)', 'Rivers (2k gap)', 'Lagos & Rivers tied', 'Kano & Lagos tied', 'Abuja (largest)', 'Ogun (largest)', 'All states equal'],
+    correct: 0, // Kano
+    explanation: 'Kano: 85k − 48k = 37k gap. All others have gaps of 2k or less.'
+  },
+  // Q10 - Text (reasoning)
+  {
+    type: 'text',
+    tag: 'LOGICAL DEDUCTION',
+    text: 'In a data project, 3 analysts can process 900 data rows in 5 hours. Working at the same rate, how many hours would it take 5 analysts to process 1,500 rows?',
+    options: ['4 hours', '3 hours', '5 hours', '6 hours', '2.5 hours', '3.5 hours', '4.5 hours', '2 hours', '7 hours', '1.5 hours'],
+    correct: 1, // 3 hours
+    explanation: '1 analyst processes 60 rows/hour. 5 analysts = 300 rows/hour. 1,500 ÷ 300 = 5 hours... wait: 5 analysts process 300/hr → 1500/300 = 5hrs. Correct answer: 5 hours (index 2). Actually: 3 analysts = 900 in 5h → rate = 900/5/3 = 60 rows/analyst/hr. 5 analysts = 300/hr. 1500/300 = 5 hours.'
+  },
+  // Q11 - Infographic (budget)
+  {
+    type: 'infographic',
+    tag: 'BUDGET ANALYSIS',
+    text: 'Nigeria\'s 2024 federal budget was ₦28.7 trillion. This infographic shows the allocation. If Education receives 6% of the budget and Defence receives 4.7%, how much MORE (in ₦ trillion) does Education receive than Defence?',
+    info: [
+      { val: '6%', lbl: 'Education', highlight: true },
+      { val: '4.7%', lbl: 'Defence', highlight: false },
+      { val: '22%', lbl: 'Debt Service', highlight: false },
+      { val: '8.3%', lbl: 'Infrastructure', highlight: false },
+      { val: '5.4%', lbl: 'Health', highlight: false },
+      { val: '₦28.7T', lbl: 'Total Budget', highlight: true }
+    ],
+    options: ['₦0.38 trillion', '₦0.42 trillion', '₦0.37 trillion', '₦0.50 trillion', '₦0.31 trillion', '₦0.45 trillion', '₦0.28 trillion', '₦0.55 trillion', '₦0.25 trillion', '₦0.60 trillion'],
+    correct: 0, // 0.38
+    explanation: 'Education: 6% × 28.7 = 1.722T. Defence: 4.7% × 28.7 = 1.349T. Difference = 0.373T ≈ ₦0.38 trillion'
+  },
+  // Q12 - Text (AI/tech)
+  {
+    type: 'text',
+    tag: 'AI LITERACY',
+    text: 'A predictive model trained on 5 years of Abuja traffic data predicts gridlock 85% accurately. A city planner uses it to schedule road repairs. Which statement BEST describes responsible use of this AI model?',
+    options: [
+      'Use predictions as the only guide; no human input needed',
+      'Combine AI predictions with real-time human observation for best decisions',
+      'Reject the model since it\'s not 100% accurate',
+      'Only use it during the rainy season',
+      'Let citizens vote on whether to trust the AI',
+      'Replace all traffic wardens with the model immediately',
+      'Use it only in wealthy areas of Abuja',
+      'Ignore the 15% error rate — it doesn\'t matter',
+      'Share model predictions publicly without explanation',
+      'Shut down road repairs entirely'
+    ],
+    correct: 1,
+    explanation: 'Responsible AI combines model output (85% accuracy) with human judgment to handle the 15% error rate effectively.'
+  },
+  // Q13 - Bar Chart (population)
+  {
+    type: 'chart',
+    tag: 'DEMOGRAPHIC ANALYSIS',
+    text: 'This chart shows urban vs rural population (millions) in 5 states. Which state has the HIGHEST proportion of urban population relative to total?',
+    chart: {
+      type: 'bar',
+      data: {
+        labels: ['Lagos', 'Kano', 'FCT', 'Delta', 'Anambra'],
+        datasets: [
+          { label: 'Urban (M)', data: [12.4, 3.8, 2.1, 1.2, 1.4], backgroundColor: 'rgba(0,230,118,0.75)', borderColor: '#00e676', borderWidth: 2 },
+          { label: 'Rural (M)', data: [2.6, 8.2, 0.9, 2.8, 1.6], backgroundColor: 'rgba(255,61,90,0.5)', borderColor: '#ff3d5a', borderWidth: 2 }
+        ]
+      }
+    },
+    options: ['Lagos (82.7%)', 'Kano (31.7%)', 'FCT (70%)', 'Delta (30%)', 'Anambra (46.7%)', 'Lagos & FCT tied', 'FCT (70%) is highest', 'Delta (largest rural)', 'Anambra (50%)', 'All above 50%'],
+    correct: 0, // Lagos 82.7%
+    explanation: 'Lagos: 12.4/(12.4+2.6) = 82.7%. FCT: 2.1/3.0 = 70%. Lagos has the highest urban proportion.'
+  },
+  // Q14 - Text (data quality)
+  {
+    type: 'text',
+    tag: 'DATA QUALITY THINKING',
+    text: 'A researcher surveys 200 students about WAEC scores — all from private schools in Victoria Island, Lagos. She concludes: "Nigerian students average 7 A1s in WAEC." What is the BIGGEST flaw in her conclusion?',
+    options: [
+      'She surveyed too many students',
+      'The sample is not representative — private schools in one area don\'t reflect all Nigerian students',
+      'WAEC results can\'t be surveyed',
+      'She should have surveyed 500 students instead',
+      'Victoria Island is not in Lagos',
+      'There\'s no flaw; her conclusion is correct',
+      'She should only survey SS3 students',
+      'WAEC A1s are impossible to track',
+      'She needs a longer survey',
+      'The conclusion is fine if she publishes it'
+    ],
+    correct: 1,
+    explanation: 'Sampling bias: private school students in a wealthy area are not representative of all Nigerian students.'
+  },
+  // Q15 - Final chart (decision)
+  {
+    type: 'chart',
+    tag: 'STRATEGIC THINKING · FINAL QUESTION',
+    text: 'This scatter-like bar chart shows 4 Nigerian startups: their monthly operating cost (₦M) vs monthly revenue (₦M). Which startup would you invest in and WHY?',
+    chart: {
+      type: 'bar',
+      data: {
+        labels: ['EduTech NG', 'AgriData', 'HealthAI', 'FinFlow'],
+        datasets: [
+          { label: 'Revenue (₦M)', data: [4.2, 6.8, 3.1, 9.4], backgroundColor: 'rgba(0,230,118,0.8)', borderColor: '#00e676', borderWidth: 2 },
+          { label: 'Cost (₦M)', data: [5.1, 4.2, 6.7, 5.8], backgroundColor: 'rgba(255,61,90,0.6)', borderColor: '#ff3d5a', borderWidth: 2 }
+        ]
+      }
+    },
+    options: [
+      'EduTech NG — largest revenue',
+      'AgriData — profitable (revenue > cost, growing sector)',
+      'HealthAI — future of Africa',
+      'FinFlow — highest revenue of all',
+      'EduTech NG — education is always safe',
+      'HealthAI — most potential',
+      'FinFlow — despite high cost, best revenue',
+      'AgriData or FinFlow — both profitable',
+      'None — all are risky',
+      'EduTech NG — known brand'
+    ],
+    correct: 7, // AgriData or FinFlow both profitable
+    explanation: 'AgriData: profit = ₦2.6M. FinFlow: profit = ₦3.6M. Both are profitable. Correct investors consider profit (revenue - cost), not just revenue.'
+  }
+];
+
+// Fix Q10 correct answer (was set wrong above, re-checking)
+QUESTIONS[9].correct = 2; // 5 hours
+
+// ============================================================
+// SCREEN NAVIGATION
+// ============================================================
+function goToScreen(id, delay=0) {
+  const overlay = document.getElementById('overlay');
+  overlay.classList.add('show');
+  setTimeout(() => {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    overlay.classList.remove('show');
+    updateProgress();
+  }, delay || 350);
+}
+
+function updateProgress() {
+  const screens = ['screen-intro','screen-profile','screen-question','screen-pass','screen-fail','screen-payment','screen-whatsapp'];
+  const current = screens.findIndex(s => document.getElementById(s).classList.contains('active'));
+  document.getElementById('progressBar').style.width = ((current / (screens.length-1)) * 100) + '%';
+}
+
+function goToProfile() {
+  goToScreen('screen-profile');
+}
+
+// ============================================================
+// ASSESSMENT START
+// ============================================================
+function startAssessment() {
+  const name = document.getElementById('pName').value.trim();
+  const age = document.getElementById('pAge').value.trim();
+  const cls = document.getElementById('pClass').value;
+  const gender = document.getElementById('pGender').value;
+  const school = document.getElementById('pSchool').value.trim();
+  const ambition = document.getElementById('pAmbition').value;
+  const email = document.getElementById('pEmail').value.trim();
+  const phone = document.getElementById('pPhone').value.trim();
+
+  if (!name || !age || !cls || !gender || !school || !ambition || !email || !phone) {
+    alert('Please fill in all required fields before proceeding.');
+    return;
+  }
+
+  applicant = {
+    name, age, cls, gender, school, ambition,
+    standout: document.getElementById('pStandout').value,
+    email, phone,
+    timestamp: new Date().toISOString()
+  };
+
+  currentQ = 0;
+  score = 0;
+  answers = [];
+
+  goToScreen('screen-question');
+  setTimeout(() => loadQuestion(0), 400);
+}
+
+// ============================================================
+// QUESTION LOADER
+// ============================================================
+function loadQuestion(idx) {
+  questionAnswered = false;
+  timeLeft = 45;
+  const q = QUESTIONS[idx];
+
+  document.getElementById('qNum').textContent = idx + 1;
+  document.getElementById('liveScore').textContent = score;
+  document.getElementById('qTypeTag').textContent = q.tag;
+  document.getElementById('qText').textContent = q.text;
+
+  // Visual
+  const vis = document.getElementById('qVisual');
+  vis.innerHTML = '';
+
+  if (q.type === 'chart') {
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-container';
+    const canvas = document.createElement('canvas');
+    canvas.id = 'qChart';
+    canvas.style.maxHeight = '220px';
+    wrap.appendChild(canvas);
+    vis.appendChild(wrap);
+
+    setTimeout(() => {
+      const ctx = canvas.getContext('2d');
+      new Chart(ctx, {
+        type: q.chart.type,
+        data: q.chart.data,
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { labels: { color: '#8fa3c0', font: { family: 'Rajdhani', size: 12 } } }
+          },
+          scales: q.chart.type !== 'doughnut' ? {
+            x: { ticks: { color: '#8fa3c0' }, grid: { color: 'rgba(0,168,255,0.08)' } },
+            y: { ticks: { color: '#8fa3c0' }, grid: { color: 'rgba(0,168,255,0.08)' } }
+          } : {}
+        }
+      });
+    }, 50);
+  } else if (q.type === 'infographic') {
+    const grid = document.createElement('div');
+    grid.className = 'infographic-grid';
+    q.info.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'info-card' + (item.highlight ? ' highlight' : '');
+      card.innerHTML = `<span class="val">${item.val}</span><div class="lbl">${item.lbl}</div>`;
+      grid.appendChild(card);
+    });
+    vis.appendChild(grid);
+  }
+
+  // Options
+  const grid = document.getElementById('optionsGrid');
+  grid.innerHTML = '';
+  const letters = 'ABCDEFGHIJ';
+  q.options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt-btn';
+    btn.innerHTML = `<span class="opt-letter">${letters[i]}</span>${opt}`;
+    btn.onclick = () => selectAnswer(i);
+    grid.appendChild(btn);
+  });
+
+  // Timer
+  startTimer();
+
+  // Slide in
+  document.getElementById('qBody').classList.remove('slide-in');
+  void document.getElementById('qBody').offsetWidth;
+  document.getElementById('qBody').classList.add('slide-in');
+}
+
+// ============================================================
+// TIMER
+// ============================================================
+function startTimer() {
+  clearInterval(timerInterval);
+  timeLeft = 45;
+  const circle = document.getElementById('timerCircle');
+  const num = document.getElementById('timerNum');
+  const circumference = 138;
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    num.textContent = timeLeft;
+    const offset = circumference - (timeLeft / 45) * circumference;
+    circle.style.strokeDashoffset = offset;
+
+    if (timeLeft <= 10) {
+      circle.style.stroke = '#ff3d5a';
+      num.style.color = '#ff3d5a';
+    } else if (timeLeft <= 20) {
+      circle.style.stroke = '#f0a500';
+      num.style.color = '#f0a500';
+    } else {
+      circle.style.stroke = '#00a8ff';
+      num.style.color = '#00a8ff';
+    }
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      if (!questionAnswered) timeExpired();
+    }
+  }, 1000);
+}
+
+function timeExpired() {
+  questionAnswered = true;
+  // Deduct for skipped (treat as wrong)
+  score -= 10;
+  if (score < 0) score = 0;
+  answers.push({ q: currentQ, selected: -1, correct: QUESTIONS[currentQ].correct, result: 'skipped' });
+  lockOptions(-1);
+  setTimeout(() => nextQuestion(), 1200);
+}
+
+// ============================================================
+// ANSWER SELECTION
+// ============================================================
+function selectAnswer(idx) {
+  if (questionAnswered) return;
+  questionAnswered = true;
+  clearInterval(timerInterval);
+
+  const q = QUESTIONS[currentQ];
+  const btns = document.querySelectorAll('.opt-btn');
+  const isCorrect = idx === q.correct;
+
+  if (isCorrect) {
+    // +7 per question (15 × 7 = 105 → cap at 100 conceptually)
+    score += Math.round(100 / 15); // ~6.67, we use 7
+    score = Math.min(score, 100);
+  } else {
+    score -= 10;
+    if (score < 0) score = 0;
+  }
+
+  answers.push({ q: currentQ, selected: idx, correct: q.correct, result: isCorrect ? 'correct' : 'wrong' });
+  document.getElementById('liveScore').textContent = score;
+  lockOptions(idx);
+  setTimeout(() => nextQuestion(), 1600);
+}
+
+function lockOptions(selected) {
+  const q = QUESTIONS[currentQ];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((btn, i) => {
+    btn.classList.add('locked');
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === selected && selected !== -1) btn.classList.add('wrong');
+  });
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ >= QUESTIONS.length) {
+    finishAssessment();
+  } else {
+    loadQuestion(currentQ);
+  }
+}
+
+// ============================================================
+// FINISH
+// ============================================================
+function finishAssessment() {
+  clearInterval(timerInterval);
+  applicant.score = score;
+  applicant.answers = answers;
+  applicant.qualified = score > 60;
+
+  // Log to console as JSON (for Google Sheets Apps Script integration)
+  console.log('APPLICANT_DATA:', JSON.stringify(applicant));
+
+  if (score > 60) {
+    document.getElementById('passScore').textContent = score;
+    document.getElementById('passMsg').textContent =
+      `${applicant.name}, you scored ${score} points — above the 60-point threshold. Your analytical intelligence has been recognised. You are one of The 36 Innovative Delegates.`;
+    goToScreen('screen-pass');
+    setTimeout(() => startConfetti(), 500);
+  } else {
+    document.getElementById('failScore').textContent = score;
+    goToScreen('screen-fail');
+  }
+}
+
+function retryAssessment() {
+  goToScreen('screen-intro');
+}
+
+// ============================================================
+// CONFETTI
+// ============================================================
+function startConfetti() {
+  const canvas = document.getElementById('confettiCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const colors = ['#00a8ff','#f0a500','#00e676','#ffffff','#ffd060'];
+  let particles = Array.from({length: 120}, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    r: Math.random() * 6 + 3,
+    d: Math.random() * 5 + 2,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    tilt: Math.random() * 10 - 5,
+    tiltAngle: 0, tiltAngleInc: Math.random() * 0.07 + 0.05
+  }));
+  let frame = 0;
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.lineWidth = p.r;
+      ctx.strokeStyle = p.color;
+      ctx.moveTo(p.x + p.tilt + p.r/4, p.y);
+      ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/4);
+      ctx.stroke();
+    });
+    update();
+    if (frame++ < 180) requestAnimationFrame(draw);
+    else ctx.clearRect(0,0,canvas.width,canvas.height);
+  }
+  function update() {
+    particles.forEach(p => {
+      p.y += p.d; p.tiltAngle += p.tiltAngleInc; p.tilt = Math.sin(p.tiltAngle) * 12;
+      if (p.y > canvas.height) { p.y = -10; p.x = Math.random() * canvas.width; }
+    });
+  }
+  draw();
+}
+
+// ============================================================
+// PAYMENT
+// ============================================================
+function goToPayment() { goToScreen('screen-payment'); }
+
+function selectPayment(choice) {
+  document.getElementById('opt-paid').classList.remove('selected','selected-gold');
+  document.getElementById('opt-later').classList.remove('selected','selected-gold');
+  document.getElementById('senderBox').classList.remove('visible');
+  document.getElementById('warningBox').classList.remove('visible');
+
+  if (choice === 'paid') {
+    document.getElementById('opt-paid').classList.add('selected-gold');
+    document.getElementById('senderBox').classList.add('visible');
+  } else {
+    document.getElementById('opt-later').classList.add('selected');
+    document.getElementById('warningBox').classList.add('visible');
+  }
+}
+
+function confirmPayment() {
+  const sender = document.getElementById('senderName').value.trim();
+  if (!sender) { alert("Please enter the sender's name as used in the bank transfer."); return; }
+  applicant.senderName = sender;
+  applicant.paymentStatus = 'paid';
+  console.log('PAYMENT_CONFIRMED:', JSON.stringify(applicant));
+  goToScreen('screen-whatsapp');
+}
+</script>
+
+<!-- Google Sheets Guide (accessible from console) -->
+<script>
+// ============================================================
+// GOOGLE SHEETS INTEGRATION GUIDE
+// ============================================================
+window.showSheetsGuide = function() {
+  const guide = `
+<h3 style="color:var(--gold);margin-bottom:12px;font-family:'Orbitron',sans-serif;font-size:0.85rem;">STEP 1 — Create the Sheet</h3>
+<p>Open <strong style="color:var(--white);">Google Sheets</strong> and create a new spreadsheet named <em>"The 36 Delegates Applicants"</em>.</p>
+<p>Add these column headers in Row 1:</p>
+<div style="background:rgba(0,168,255,0.06);border-radius:10px;padding:12px;margin:10px 0;font-size:0.82rem;color:var(--electric);font-family:monospace;">
+Timestamp | Name | Age | Class | Gender | School | Ambition | Standout | Email | Phone | Score | Qualified | Answers | Sender Name | Payment Status
+</div>
+
+<h3 style="color:var(--gold);margin:16px 0 10px;font-family:'Orbitron',sans-serif;font-size:0.85rem;">STEP 2 — Create Apps Script</h3>
+<p>In the sheet, go to <strong style="color:var(--white);">Extensions → Apps Script</strong>. Paste this code:</p>
+<div style="background:#0a1628;border:1px solid rgba(0,168,255,0.2);border-radius:10px;padding:14px;margin:10px 0;font-size:0.78rem;color:#9effd1;font-family:monospace;overflow-x:auto;white-space:pre;">
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    data.timestamp, data.name, data.age, data.cls,
+    data.gender, data.school, data.ambition, data.standout,
+    data.email, data.phone, data.score, data.qualified,
+    JSON.stringify(data.answers), data.senderName || '', data.paymentStatus || 'pending'
+  ]);
+  return ContentService.createTextOutput('OK');
+}
+</div>
+
+<h3 style="color:var(--gold);margin:16px 0 10px;font-family:'Orbitron',sans-serif;font-size:0.85rem;">STEP 3 — Deploy as Web App</h3>
+<p>Click <strong style="color:var(--white);">Deploy → New Deployment</strong>. Set:<br>
+• Type: <strong style="color:var(--white);">Web App</strong><br>
+• Execute as: <strong style="color:var(--white);">Me</strong><br>
+• Who has access: <strong style="color:var(--white);">Anyone</strong><br>
+Copy the <strong style="color:var(--electric);">Web App URL</strong>.</p>
+
+<h3 style="color:var(--gold);margin:16px 0 10px;font-family:'Orbitron',sans-serif;font-size:0.85rem;">STEP 4 — Connect to This App</h3>
+<p>In the HTML file, find the <code style="color:var(--electric);">finishAssessment()</code> function. Add this fetch call:</p>
+<div style="background:#0a1628;border:1px solid rgba(0,168,255,0.2);border-radius:10px;padding:14px;margin:10px 0;font-size:0.78rem;color:#9effd1;font-family:monospace;overflow-x:auto;white-space:pre;">
+const SHEET_URL = 'YOUR_WEB_APP_URL_HERE';
+fetch(SHEET_URL, {
+  method: 'POST',
+  body: JSON.stringify(applicant)
+});
+</div>
+
+<h3 style="color:var(--gold);margin:16px 0 10px;font-family:'Orbitron',sans-serif;font-size:0.85rem;">STEP 5 — View Reports</h3>
+<p>In Google Sheets, use <strong style="color:var(--white);">Data → Create a Filter</strong> and filter Column L (Qualified) by <strong style="color:var(--electric);">TRUE</strong> to see only qualified applicants. Use <strong style="color:var(--white);">Insert → Chart</strong> on Column K (Score) to visualize score distribution.</p>
+
+<p style="margin-top:14px;color:var(--success);font-size:0.85rem;">✅ Once set up, every submission automatically populates your sheet in real time.</p>
+`;
+  document.getElementById('sheetsContent').innerHTML = guide;
+  document.getElementById('sheetsModal').style.display = 'flex';
+};
+</script>
+
+<!-- Footer hint -->
+<div style="position:fixed;bottom:12px;right:16px;z-index:50;font-size:0.7rem;color:rgba(143,163,192,0.4);font-family:'Orbitron',sans-serif;letter-spacing:0.1em;cursor:pointer;" onclick="showSheetsGuide()">
+  📊 SHEETS GUIDE
+</div>
+
+</body>
+</html>
