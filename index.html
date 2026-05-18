@@ -247,10 +247,6 @@ body{
 
 .divider{height:1px;background:var(--border);margin:18px 0}
 
-/* sheets modal */
-#sheets-modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.76);align-items:center;justify-content:center;padding:18px}
-#sheets-modal.open{display:flex}
-.modal-inner{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px;max-width:570px;width:100%;max-height:82vh;overflow-y:auto}
 
 /* ── MOBILE-FIRST: full-screen comfortable on any phone ── */
 
@@ -533,19 +529,13 @@ body{
   </div>
 </div>
 
-<!-- ══ SHEETS MODAL ══ -->
-<div id="sheets-modal">
-  <div class="modal-inner">
-    <h2 style="font-family:'Orbitron',sans-serif;font-size:.88rem;color:var(--gold);margin-bottom:15px">📊 GOOGLE SHEETS SETUP GUIDE</h2>
-    <div id="sheets-body" style="font-size:.87rem;color:var(--text-soft);line-height:1.78"></div>
-    <button class="btn btn-ghost" onclick="document.getElementById('sheets-modal').classList.remove('open')" style="width:100%;margin-top:18px">CLOSE</button>
-  </div>
-</div>
-
-<div style="position:fixed;bottom:11px;right:13px;z-index:50;font-size:.66rem;color:var(--text-dim);font-family:'Orbitron',sans-serif;letter-spacing:.1em;cursor:pointer" onclick="openSheets()">📊 SHEETS GUIDE</div>
 
 <script>
 // ─── STATE
+// ── GOOGLE SHEETS WEB APP URL ──────────────────────────────────
+// After deploying your Apps Script, paste your Web App URL below:
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycby9NDkRq8hU71sXiLVIv4G-jU1JDfPEDGoqJIrV5G9Kf7uO0h98XNfuuz9xlsYqSFvn/exec';
+
 let applicant={},qIdx=0,score=0,answers=[],timerID=null,timeLeft=60,answered=false,chartInst=null;
 
 // ─── QUESTIONS  (15 beginner-friendly, relatable for a Nigerian 13-year-old)
@@ -838,6 +828,12 @@ function finish(){
   applicant.score=score;
   applicant.answers=answers;
   applicant.qualified=score>60;
+  // ── Send applicant data to Google Sheets ──
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(applicant)
+  }).catch(function(e){ console.warn('Sheet sync error:', e); });
   console.log('APPLICANT_DATA:',JSON.stringify(applicant));
   if(score>60){
     document.getElementById('pass-score').textContent=score;
@@ -897,59 +893,16 @@ function confirmPay(){
   const n=document.getElementById('sender-name').value.trim();
   if(!n){alert("Please enter the name used for the bank transfer.");return;}
   applicant.senderName=n;applicant.paymentStatus='paid';
+  // ── Sync updated payment status to Google Sheets ──
+  fetch(SHEETS_URL, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(applicant)
+  }).catch(function(e){ console.warn('Sheet sync error:', e); });
   console.log('PAYMENT_CONFIRMED:',JSON.stringify(applicant));
   go('s-whatsapp');
 }
 
-// ─── SHEETS GUIDE
-function openSheets(){
-  document.getElementById('sheets-body').innerHTML=`
-<h3 style="color:var(--gold);margin-bottom:9px">STEP 1 — Create Your Google Sheet</h3>
-<p>Go to <strong>sheets.google.com</strong>, create a new spreadsheet named <em>"The 36 Delegates — Applicants"</em>.</p>
-<p style="margin-top:7px">Add these column headers in Row 1:</p>
-<div style="background:var(--bg2);border-radius:7px;padding:11px;margin:9px 0;font-size:.78rem;color:var(--accent);font-family:monospace;overflow-x:auto">
-Timestamp | Name | Age | Class | Gender | School | Ambition | Standout | Email | Phone | Score | Qualified | Answers | Sender Name | Payment Status
-</div>
-
-<h3 style="color:var(--gold);margin:15px 0 8px">STEP 2 — Add Apps Script</h3>
-<p>In the sheet: <strong>Extensions → Apps Script</strong>. Delete all existing code and paste this:</p>
-<div style="background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:13px;margin:9px 0;font-size:.76rem;color:#9ef5cf;font-family:monospace;white-space:pre;overflow-x:auto">function doPost(e) {
-  var sheet = SpreadsheetApp
-    .getActiveSpreadsheet().getActiveSheet();
-  var d = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    d.timestamp, d.name, d.age, d.cls,
-    d.gender, d.school, d.ambition, d.standout,
-    d.email, d.phone, d.score, d.qualified,
-    JSON.stringify(d.answers),
-    d.senderName||'', d.paymentStatus||'pending'
-  ]);
-  return ContentService.createTextOutput('OK');
-}</div>
-
-<h3 style="color:var(--gold);margin:15px 0 8px">STEP 3 — Deploy as Web App</h3>
-<p>Click <strong>Deploy → New Deployment</strong>. Set:<br>
-• Type: <strong>Web App</strong><br>
-• Execute as: <strong>Me</strong><br>
-• Who has access: <strong>Anyone</strong><br>
-Click Deploy and copy the <strong style="color:var(--accent)">Web App URL</strong>.</p>
-
-<h3 style="color:var(--gold);margin:15px 0 8px">STEP 4 — Connect to This App</h3>
-<p>In the HTML file, find the <code style="color:var(--accent)">finish()</code> function. Add this before the <code>if(score>60)</code> line:</p>
-<div style="background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:13px;margin:9px 0;font-size:.76rem;color:#9ef5cf;font-family:monospace;white-space:pre;overflow-x:auto">fetch('YOUR_WEB_APP_URL_HERE',{
-  method:'POST',
-  body:JSON.stringify(applicant)
-});</div>
-
-<h3 style="color:var(--gold);margin:15px 0 8px">STEP 5 — View Reports</h3>
-<ul style="margin:0 0 0 15px;list-style:disc;color:var(--text-soft)">
-  <li>Use <strong>Data → Create a Filter</strong> on column L (Qualified) and filter by TRUE to see only qualified applicants.</li>
-  <li>Use <strong>Insert → Chart</strong> on column K (Score) to visualise score distribution.</li>
-  <li>Sort column A (Timestamp) descending to see the newest applicants first.</li>
-</ul>
-<p style="margin-top:13px;color:var(--green);font-size:.85rem">✅ Once set up, every submission auto-populates your sheet in real time.</p>`;
-  document.getElementById('sheets-modal').classList.add('open');
-}
 </script>
 </body>
 </html>
