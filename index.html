@@ -363,7 +363,7 @@ body{
     <p class="rules-ttl">⚡ HOW THIS WORKS</p>
     <div class="rl"><span>📋</span><span>You will answer <strong>15 questions</strong> — one at a time, full screen.</span></div>
     <div class="rl"><span>⏱</span><span>Each question has a <strong>60-second timer</strong>. You cannot go back once time is up.</span></div>
-    <div class="rl"><span>✅</span><span>Correct answer: <strong>+7 points</strong> &nbsp;|&nbsp; Wrong or skipped: <strong>−10 points</strong></span></div>
+    <div class="rl"><span>✅</span><span>Correct answer: <strong>+7 points</strong> &nbsp;|&nbsp; Wrong or skipped: <strong>−2 points</strong></span></div>
     <div class="rl"><span>🎯</span><span>Score <strong>above 60 points</strong> to qualify and secure your school's slot.</span></div>
     <div class="rl"><span>👀</span><span>Questions with charts — <strong>read the chart carefully first</strong>, then answer.</span></div>
   </div>
@@ -667,8 +667,6 @@ const QS=[
  ans:1}  // A: 1 per 40; B: 1 per 16 → B is better
 ];
 
-];
-
 // ─── SCREEN NAV
 const SCREENS=['s-intro','s-profile','s-question','s-pass','s-fail','s-payment','s-whatsapp'];
 function go(id){
@@ -831,7 +829,8 @@ function finish(){
   // ── Send applicant data to Google Sheets ──
   fetch(SHEETS_URL, {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    mode: 'no-cors',
+    headers: {'Content-Type':'text/plain'},
     body: JSON.stringify(applicant)
   }).catch(function(e){ console.warn('Sheet sync error:', e); });
   console.log('APPLICANT_DATA:',JSON.stringify(applicant));
@@ -896,7 +895,8 @@ function confirmPay(){
   // ── Sync updated payment status to Google Sheets ──
   fetch(SHEETS_URL, {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    mode: 'no-cors',
+    headers: {'Content-Type':'text/plain'},
     body: JSON.stringify(applicant)
   }).catch(function(e){ console.warn('Sheet sync error:', e); });
   console.log('PAYMENT_CONFIRMED:',JSON.stringify(applicant));
